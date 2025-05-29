@@ -1,0 +1,55 @@
+/* reserva.component.css */
+.full-width {
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+.reserva-card {
+  max-width: 800px;
+  margin: 20px auto;
+  padding: 20px;
+}
+
+.reserva-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.form-row {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.mat-form-field {
+  flex: 1;
+  min-width: 250px;
+}
+
+.form-actions {
+  display: flex;
+  gap: 16px;
+  justify-content: flex-end;
+  margin-top: 16px;
+}
+
+:host ::ng-deep .success-snackbar {
+  background: #4caf50;
+  color: white;
+}
+
+:host ::ng-deep .error-snackbar {
+  background: #f44336;
+  color: white;
+}
+
+@media (max-width: 599px) {
+  .form-row {
+    flex-direction: column;
+  }
+
+  .mat-form-field {
+    width: 100%;
+  }
+}

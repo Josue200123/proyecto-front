@@ -1,0 +1,171 @@
+<mat-card class="reserva-card">
+  <mat-card-header>
+    <mat-card-title>Nueva Reserva</mat-card-title>
+  </mat-card-header>
+
+  <mat-card-content>
+    <form [formGroup]="reservaForm" (ngSubmit)="onSubmit()" class="reserva-form">
+      <div class="form-row">
+        <mat-form-field appearance="outline">
+          <mat-label>ID de la reserva</mat-label>
+          <input matInput type="number" formControlName="id" required min="1">
+          <mat-error *ngIf="reservaForm.get('id')?.hasError('required')">
+            Este campo es requerido
+          </mat-error>
+          <mat-error *ngIf="reservaForm.get('id')?.hasError('min')">
+            El ID debe ser mayor a 0
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Número de vuelos</mat-label>
+          <input matInput type="number" formControlName="numero_vuelos" required min="1">
+          <mat-error *ngIf="reservaForm.get('numero_vuelos')?.hasError('required')">
+            Este campo es requerido
+          </mat-error>
+          <mat-error *ngIf="reservaForm.get('numero_vuelos')?.hasError('min')">
+            El número debe ser mayor a 0
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Valor</mat-label>
+          <input matInput type="number" formControlName="valor" required min="0">
+          <mat-error *ngIf="reservaForm.get('valor')?.hasError('required')">
+            Este campo es requerido
+          </mat-error>
+          <mat-error *ngIf="reservaForm.get('valor')?.hasError('min')">
+            El valor debe ser mayor o igual a 0
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="form-row">
+        <mat-form-field appearance="outline">
+          <mat-label>Fecha de vuelo</mat-label>
+          <input matInput [matDatepicker]="picker" formControlName="fecha_vuelos" required [min]="minFecha">
+          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+          <mat-error *ngIf="reservaForm.get('fecha_vuelos')?.hasError('required')">
+            Este campo es requerido
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Hora</mat-label>
+          <input matInput type="time" formControlName="hora" required>
+          <mat-error *ngIf="reservaForm.get('hora')?.hasError('required')">
+            Este campo es requerido
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="form-row">
+        <mat-form-field appearance="outline">
+          <mat-label>ID del cliente</mat-label>
+          <input matInput type="number" formControlName="cliente_id" required min="1">
+          <button mat-icon-button matSuffix (click)="buscarCliente()" tabindex="-1">
+            <mat-icon>search</mat-icon>
+          </button>
+          <mat-error *ngIf="reservaForm.get('cliente_id')?.hasError('required')">
+            Este campo es requerido
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div *ngIf="clienteEncontrado">
+        <p><strong>Cliente:</strong> {{ clienteEncontrado.nombre }} ({{ clienteEncontrado.email }})</p>
+      </div>
+      <div *ngIf="mostrarFormularioCliente">
+        <app-formulario-cliente (clienteCreado)="onClienteCreado($event)"></app-formulario-cliente>
+      </div>
+
+      <div class="form-row">
+        <mat-form-field appearance="outline">
+          <mat-label>Aerolínea</mat-label>
+          <mat-select formControlName="aerolinea_id" required>
+            <mat-option *ngFor="let aerolinea of aerolineas; trackBy: trackById" [value]="aerolinea.id">
+              {{ aerolinea.nombre }}
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="reservaForm.get('aerolinea_id')?.hasError('required')">
+            Este campo es requerido
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="form-row">
+        <mat-form-field appearance="outline">
+          <mat-label>Moneda</mat-label>
+          <mat-select formControlName="moneda_id" required>
+            <mat-option *ngFor="let moneda of monedas; trackBy: trackById" [value]="moneda.id">
+              {{ moneda.tipo_moneda }}
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="reservaForm.get('moneda_id')?.hasError('required')">
+            Este campo es requerido
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Tipo de pago</mat-label>
+          <mat-select formControlName="tipo_pago_id" required>
+            <mat-option *ngFor="let tipoPago of tiposPago; trackBy: trackById" [value]="tipoPago.id">
+              {{ tipoPago.medio_pago }}
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="reservaForm.get('tipo_pago_id')?.hasError('required')">
+            Este campo es requerido
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="form-row">
+        <mat-form-field appearance="outline">
+          <mat-label>Ciudad de origen</mat-label>
+          <mat-select formControlName="origen_id" required>
+            <mat-option *ngFor="let ciudad of ciudades; trackBy: trackById" [value]="ciudad.id">
+              {{ ciudad.nombre }}
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="reservaForm.get('origen_id')?.hasError('required')">
+            Este campo es requerido
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Ciudad de destino</mat-label>
+          <mat-select formControlName="destino_id" required>
+            <mat-option *ngFor="let ciudad of ciudades; trackBy: trackById" [value]="ciudad.id">
+              {{ ciudad.nombre }}
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="reservaForm.get('destino_id')?.hasError('required')">
+            Este campo es requerido
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="form-row">
+        <mat-form-field appearance="outline">
+          <mat-label>Valor del equipaje</mat-label>
+          <input matInput type="number" formControlName="valor_equipaje" required min="0">
+          <mat-error *ngIf="reservaForm.get('valor_equipaje')?.hasError('required')">
+            Este campo es requerido
+          </mat-error>
+          <mat-error *ngIf="reservaForm.get('valor_equipaje')?.hasError('min')">
+            El valor debe ser mayor o igual a 0
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="form-actions">
+        <button mat-raised-button color="primary" type="submit" [disabled]="!reservaForm.valid">
+          Crear Reserva
+        </button>
+        <button mat-button type="button" (click)="reservaForm.reset()">
+          Limpiar
+        </button>
+      </div>
+    </form>
+  </mat-card-content>
+</mat-card> 

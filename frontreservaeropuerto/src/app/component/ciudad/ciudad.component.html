@@ -1,0 +1,17 @@
+<div class="container">
+  <h2>Lista de Ciudades</h2>
+  
+  <div class="ciudades-lista">
+    <div *ngIf="ciudades.length === 0" class="no-ciudades">
+      No hay ciudades disponibles.
+    </div>
+    
+    <div *ngFor="let ciudad of ciudades" class="ciudad-item">
+      <h3>{{ ciudad.nombre }}</h3>
+      <div class="ciudad-detalles">
+        <p *ngIf="ciudad.pais">País: {{ ciudad.pais }}</p>
+        <p *ngIf="ciudad.codigo">Código: {{ ciudad.codigo }}</p>
+      </div>
+    </div>
+  </div>
+</div>
