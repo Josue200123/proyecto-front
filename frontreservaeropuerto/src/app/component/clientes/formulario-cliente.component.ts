@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Output, Input } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ClientesService } from '../../services/clientes.service';
@@ -21,10 +21,6 @@ import { MatIconModule } from '@angular/material/icon';
   template: `
     <form [formGroup]="clienteForm" (ngSubmit)="onSubmit()">
       <mat-form-field appearance="outline">
-        <mat-label>ID</mat-label>
-        <input matInput type="number" formControlName="id" required>
-      </mat-form-field>
-      <mat-form-field appearance="outline">
         <mat-label>Nombre</mat-label>
         <input matInput formControlName="nombre" required>
       </mat-form-field>
@@ -39,6 +35,12 @@ import { MatIconModule } from '@angular/material/icon';
       <mat-form-field appearance="outline">
         <mat-label>Email</mat-label>
         <input matInput type="email" formControlName="email" required>
+        <mat-error *ngIf="clienteForm.get('email')?.hasError('required')">
+          El correo es obligatorio
+        </mat-error>
+        <mat-error *ngIf="clienteForm.get('email')?.hasError('email') && !clienteForm.get('email')?.hasError('required')">
+          El correo no es válido
+        </mat-error>
       </mat-form-field>
       <button mat-raised-button color="primary" type="submit" [disabled]="!clienteForm.valid">Crear Cliente</button>
     </form>
@@ -46,12 +48,12 @@ import { MatIconModule } from '@angular/material/icon';
   styles: [`form { display: flex; flex-direction: column; gap: 10px; }`]
 })
 export class FormularioClienteComponent {
+  @Input() id: number | null = null;
   @Output() clienteCreado = new EventEmitter<any>();
   clienteForm: FormGroup;
 
   constructor(private fb: FormBuilder, private clientesService: ClientesService) {
     this.clienteForm = this.fb.group({
-      id: ['', [Validators.required, Validators.min(1)]],
       nombre: ['', Validators.required],
       fecha_nacimiento: ['', Validators.required],
       telefono: ['', Validators.required],
@@ -60,8 +62,8 @@ export class FormularioClienteComponent {
   }
 
   onSubmit() {
-    if (this.clienteForm.valid) {
-      const cliente = this.clienteForm.value;
+    if (this.clienteForm.valid && this.id != null) {
+      const cliente = { ...this.clienteForm.value, id: this.id };
       this.clientesService.crear(cliente).subscribe(
         response => {
           this.clienteCreado.emit(cliente);

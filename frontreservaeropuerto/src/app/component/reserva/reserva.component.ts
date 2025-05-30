@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormsModule, AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatCardModule } from '@angular/material/card';
@@ -15,10 +15,19 @@ import { FormularioClienteComponent } from '../clientes/formulario-cliente.compo
 
 import { ReservaService } from '../../services/reserva.service';
 import { ClientesService } from '../../services/clientes.service';
-import { AerolineaService } from '../../services/aerolinea.service';
-import { MonedaService } from '../../services/moneda.service';
-import { TipopagoService } from '../../services/tipopago.service';
-import { CiudadService } from '../../services/ciudad.service';
+import { ListasGeneralesService } from '../../services/listas-generales.service';
+
+// Validador personalizado para ciudades diferentes
+export function ciudadesDiferentesValidator(): ValidatorFn {
+  return (group: AbstractControl): ValidationErrors | null => {
+    const origen = group.get('origen_id')?.value;
+    const destino = group.get('destino_id')?.value;
+    if (origen && destino && origen === destino) {
+      return { ciudadesIguales: true };
+    }
+    return null;
+  };
+}
 
 @Component({
   selector: 'app-reserva',
@@ -51,15 +60,13 @@ export class ReservaComponent implements OnInit {
   clienteEncontrado: any = null;
   mostrarFormularioCliente = false;
   minFecha: Date = new Date();
+  mensajeExito: string | null = null;
 
   constructor(
     private fb: FormBuilder,
     private reservaService: ReservaService,
-    private clientesService: ClientesService,
-    private aerolineaService: AerolineaService,
-    private monedaService: MonedaService,
-    private tipopagoService: TipopagoService,
-    private ciudadService: CiudadService,
+    private listasGeneralesService: ListasGeneralesService,
+    private clientesService: ClientesService, // Solo para buscar por ID
     private snackBar: MatSnackBar
   ) {
     this.reservaForm = this.fb.group({
@@ -75,7 +82,7 @@ export class ReservaComponent implements OnInit {
       origen_id: ['', Validators.required],
       destino_id: ['', Validators.required],
       valor_equipaje: ['', [Validators.required, Validators.min(0)]]
-    });
+    }, { validators: [ciudadesDiferentesValidator()] });
   }
 
   ngOnInit(): void {
@@ -83,30 +90,22 @@ export class ReservaComponent implements OnInit {
   }
 
   cargarDatos(): void {
-    this.clientesService.listar().subscribe(
-      (response: any) => this.clientes = response.data || [],
-      (error: any) => this.mostrarError('Error al cargar clientes')
-    );
-
-    this.aerolineaService.listar().subscribe(
-      (response: any) => this.aerolineas = response.data || [],
-      (error: any) => this.mostrarError('Error al cargar aerolíneas')
-    );
-
-    this.monedaService.listar().subscribe(
-      (response: any) => this.monedas = response.data || [],
-      (error: any) => this.mostrarError('Error al cargar monedas')
-    );
-
-    this.tipopagoService.listar().subscribe(
-      (response: any) => this.tiposPago = response.data || [],
-      (error: any) => this.mostrarError('Error al cargar tipos de pago')
-    );
-
-    this.ciudadService.listar().subscribe(
-      (response: any) => this.ciudades = response.data || [],
-      (error: any) => this.mostrarError('Error al cargar ciudades')
-    );
+    this.listasGeneralesService.obtenerListas(['aerolinea', 'moneda', 'ciudad', 'tipopago', 'cliente'])
+      .subscribe(
+        (response: any) => {
+          const data = response.data?.generalData || {};
+          this.aerolineas = data.aerolinea || [];
+          this.monedas = data.moneda || [];
+          this.ciudades = data.ciudad || [];
+          this.tiposPago = data.tipopago || [];
+          this.clientes = data.cliente || [];
+        },
+        (error: any) => {
+          console.error('Error real al cargar listas generales:', error);
+          const mensaje = error?.error?.mensaje || error?.message || JSON.stringify(error) || 'Error al cargar listas generales';
+          this.mostrarError(mensaje);
+        }
+      );
   }
 
   onSubmit(): void {
@@ -114,8 +113,10 @@ export class ReservaComponent implements OnInit {
       const reserva = this.reservaForm.value;
       this.reservaService.crear(reserva).subscribe(
         response => {
+          this.mensajeExito = '¡Reserva creada exitosamente!';
           this.mostrarExito('Reserva creada exitosamente');
           this.reservaForm.reset();
+          setTimeout(() => this.mensajeExito = null, 5000);
         },
         error => {
           if (error.error && error.error.mensaje && error.error.mensaje.includes('ID')) {

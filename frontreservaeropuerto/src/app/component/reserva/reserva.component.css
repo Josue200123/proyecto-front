@@ -5,51 +5,119 @@
 }
 
 .reserva-card {
-  max-width: 800px;
-  margin: 20px auto;
-  padding: 20px;
+  max-width: 900px;
+  margin: 32px auto;
+  padding: 0;
+  border-radius: 18px;
+  box-shadow: 0 4px 24px rgba(211,47,47,0.10);
+  border-top: 6px solid #d32f2f;
+  background: #fafbfc;
+}
+
+mat-card-header {
+  background: linear-gradient(90deg, #d32f2f 0%, #1976d2 100%);
+  color: #fff;
+  border-radius: 18px 18px 0 0;
+  padding: 24px 32px 12px 32px;
+}
+
+mat-card-title {
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: #fff;
+}
+
+mat-card-content {
+  padding: 32px;
 }
 
 .reserva-form {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 24px;
 }
 
 .form-row {
   display: flex;
-  gap: 16px;
+  gap: 24px;
   flex-wrap: wrap;
 }
 
 .mat-form-field {
   flex: 1;
-  min-width: 250px;
+  min-width: 220px;
+  background: #fff;
+  border-radius: 8px;
+}
+
+.mat-form-field-appearance-outline .mat-form-field-outline {
+  color: #d32f2f;
+}
+
+.mat-form-field-appearance-outline .mat-form-field-outline-thick {
+  color: #d32f2f;
+}
+
+.mat-form-field.mat-focused .mat-form-field-outline-thick {
+  color: #1976d2;
+}
+
+.mat-form-field.mat-focused .mat-form-field-label {
+  color: #1976d2 !important;
+}
+
+.mat-form-field .mat-icon {
+  color: #d32f2f;
 }
 
 .form-actions {
   display: flex;
   gap: 16px;
   justify-content: flex-end;
-  margin-top: 16px;
+  margin-top: 24px;
 }
 
-:host ::ng-deep .success-snackbar {
-  background: #4caf50;
-  color: white;
+button[mat-raised-button] {
+  background: linear-gradient(90deg, #d32f2f 0%, #1976d2 100%);
+  color: #fff;
+  font-weight: 600;
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(211,47,47,0.08);
 }
 
-:host ::ng-deep .error-snackbar {
-  background: #f44336;
-  color: white;
+button[mat-button] {
+  color: #d32f2f;
+  font-weight: 600;
+}
+
+mat-error {
+  font-size: 0.95em;
+  color: #d32f2f;
+}
+
+@media (max-width: 900px) {
+  .reserva-card {
+    max-width: 98vw;
+  }
+  mat-card-content {
+    padding: 16px;
+  }
+  mat-card-header {
+    padding: 16px 16px 8px 16px;
+  }
 }
 
 @media (max-width: 599px) {
   .form-row {
     flex-direction: column;
+    gap: 12px;
   }
-
   .mat-form-field {
     width: 100%;
+    min-width: unset;
+  }
+  mat-card-content {
+    padding: 8px;
   }
 }

@@ -177,6 +177,25 @@
   }
 </style>
 
+<header style="display: flex; align-items: center; gap: 1rem; background: #d32f2f; padding: 1rem; border-radius: 0 0 16px 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+  <img src="assets/logo-aerolinea.png" alt="Logo Aerolínea" style="height: 60px;">
+  <h1 style="color: white; margin: 0; font-size: 2.2rem; font-weight: 600; letter-spacing: 1px;">Reserva de Vuelos</h1>
+  <mat-icon style="color: white; font-size: 40px; margin-left: auto;">flight_takeoff</mat-icon>
+</header>
+
+<div style="max-width: 500px; margin: 2rem auto; background: #fff; border-radius: 12px; box-shadow: 0 2px 12px rgba(211,47,47,0.08); padding: 2rem;">
+  <form>
+    <mat-form-field appearance="outline" style="width: 100%;">
+      <mat-label>Cliente</mat-label>
+      <input matInput placeholder="ID del cliente">
+      <button mat-icon-button matSuffix matTooltip="Buscar cliente por ID">
+        <mat-icon color="primary">search</mat-icon>
+      </button>
+    </mat-form-field>
+    <!-- Aquí puedes agregar más campos -->
+  </form>
+</div>
+
 <main class="main">
   <div class="content">
     <div class="left-side">

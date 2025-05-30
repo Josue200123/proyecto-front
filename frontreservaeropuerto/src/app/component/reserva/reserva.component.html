@@ -5,61 +5,7 @@
 
   <mat-card-content>
     <form [formGroup]="reservaForm" (ngSubmit)="onSubmit()" class="reserva-form">
-      <div class="form-row">
-        <mat-form-field appearance="outline">
-          <mat-label>ID de la reserva</mat-label>
-          <input matInput type="number" formControlName="id" required min="1">
-          <mat-error *ngIf="reservaForm.get('id')?.hasError('required')">
-            Este campo es requerido
-          </mat-error>
-          <mat-error *ngIf="reservaForm.get('id')?.hasError('min')">
-            El ID debe ser mayor a 0
-          </mat-error>
-        </mat-form-field>
-
-        <mat-form-field appearance="outline">
-          <mat-label>Número de vuelos</mat-label>
-          <input matInput type="number" formControlName="numero_vuelos" required min="1">
-          <mat-error *ngIf="reservaForm.get('numero_vuelos')?.hasError('required')">
-            Este campo es requerido
-          </mat-error>
-          <mat-error *ngIf="reservaForm.get('numero_vuelos')?.hasError('min')">
-            El número debe ser mayor a 0
-          </mat-error>
-        </mat-form-field>
-
-        <mat-form-field appearance="outline">
-          <mat-label>Valor</mat-label>
-          <input matInput type="number" formControlName="valor" required min="0">
-          <mat-error *ngIf="reservaForm.get('valor')?.hasError('required')">
-            Este campo es requerido
-          </mat-error>
-          <mat-error *ngIf="reservaForm.get('valor')?.hasError('min')">
-            El valor debe ser mayor o igual a 0
-          </mat-error>
-        </mat-form-field>
-      </div>
-
-      <div class="form-row">
-        <mat-form-field appearance="outline">
-          <mat-label>Fecha de vuelo</mat-label>
-          <input matInput [matDatepicker]="picker" formControlName="fecha_vuelos" required [min]="minFecha">
-          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-          <mat-datepicker #picker></mat-datepicker>
-          <mat-error *ngIf="reservaForm.get('fecha_vuelos')?.hasError('required')">
-            Este campo es requerido
-          </mat-error>
-        </mat-form-field>
-
-        <mat-form-field appearance="outline">
-          <mat-label>Hora</mat-label>
-          <input matInput type="time" formControlName="hora" required>
-          <mat-error *ngIf="reservaForm.get('hora')?.hasError('required')">
-            Este campo es requerido
-          </mat-error>
-        </mat-form-field>
-      </div>
-
+      <!-- Fila 1: Solo ID del cliente -->
       <div class="form-row">
         <mat-form-field appearance="outline">
           <mat-label>ID del cliente</mat-label>
@@ -76,10 +22,61 @@
         <p><strong>Cliente:</strong> {{ clienteEncontrado.nombre }} ({{ clienteEncontrado.email }})</p>
       </div>
       <div *ngIf="mostrarFormularioCliente">
-        <app-formulario-cliente (clienteCreado)="onClienteCreado($event)"></app-formulario-cliente>
+        <app-formulario-cliente [id]="reservaForm.get('cliente_id')?.value" (clienteCreado)="onClienteCreado($event)"></app-formulario-cliente>
       </div>
 
+      <!-- Fila 2: ID de reserva, Número de vuelos, Valor -->
       <div class="form-row">
+        <mat-form-field appearance="outline">
+          <mat-label>ID de la reserva</mat-label>
+          <input matInput type="number" formControlName="id" required min="1">
+          <mat-error *ngIf="reservaForm.get('id')?.hasError('required')">
+            Este campo es requerido
+          </mat-error>
+          <mat-error *ngIf="reservaForm.get('id')?.hasError('min')">
+            El ID debe ser mayor a 0
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Número de vuelos</mat-label>
+          <input matInput type="number" formControlName="numero_vuelos" required min="1">
+          <mat-error *ngIf="reservaForm.get('numero_vuelos')?.hasError('required')">
+            Este campo es requerido
+          </mat-error>
+          <mat-error *ngIf="reservaForm.get('numero_vuelos')?.hasError('min')">
+            El número debe ser mayor a 0
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Valor</mat-label>
+          <input matInput type="number" formControlName="valor" required min="0">
+          <mat-error *ngIf="reservaForm.get('valor')?.hasError('required')">
+            Este campo es requerido
+          </mat-error>
+          <mat-error *ngIf="reservaForm.get('valor')?.hasError('min')">
+            El valor debe ser mayor o igual a 0
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <!-- Fila 3: Fecha de vuelo, Hora, Aerolínea -->
+      <div class="form-row">
+        <mat-form-field appearance="outline">
+          <mat-label>Fecha de vuelo</mat-label>
+          <input matInput [matDatepicker]="picker" formControlName="fecha_vuelos" required [min]="minFecha">
+          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+          <mat-error *ngIf="reservaForm.get('fecha_vuelos')?.hasError('required')">
+            Este campo es requerido
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Hora</mat-label>
+          <input matInput type="time" formControlName="hora" required>
+          <mat-error *ngIf="reservaForm.get('hora')?.hasError('required')">
+            Este campo es requerido
+          </mat-error>
+        </mat-form-field>
         <mat-form-field appearance="outline">
           <mat-label>Aerolínea</mat-label>
           <mat-select formControlName="aerolinea_id" required>
@@ -93,6 +90,7 @@
         </mat-form-field>
       </div>
 
+      <!-- Fila 4: Moneda, Tipo de pago, Ciudad de origen -->
       <div class="form-row">
         <mat-form-field appearance="outline">
           <mat-label>Moneda</mat-label>
@@ -105,7 +103,6 @@
             Este campo es requerido
           </mat-error>
         </mat-form-field>
-
         <mat-form-field appearance="outline">
           <mat-label>Tipo de pago</mat-label>
           <mat-select formControlName="tipo_pago_id" required>
@@ -117,9 +114,6 @@
             Este campo es requerido
           </mat-error>
         </mat-form-field>
-      </div>
-
-      <div class="form-row">
         <mat-form-field appearance="outline">
           <mat-label>Ciudad de origen</mat-label>
           <mat-select formControlName="origen_id" required>
@@ -131,7 +125,10 @@
             Este campo es requerido
           </mat-error>
         </mat-form-field>
+      </div>
 
+      <!-- Fila 5: Ciudad de destino, Valor del equipaje -->
+      <div class="form-row">
         <mat-form-field appearance="outline">
           <mat-label>Ciudad de destino</mat-label>
           <mat-select formControlName="destino_id" required>
@@ -143,9 +140,6 @@
             Este campo es requerido
           </mat-error>
         </mat-form-field>
-      </div>
-
-      <div class="form-row">
         <mat-form-field appearance="outline">
           <mat-label>Valor del equipaje</mat-label>
           <input matInput type="number" formControlName="valor_equipaje" required min="0">
@@ -156,6 +150,11 @@
             El valor debe ser mayor o igual a 0
           </mat-error>
         </mat-form-field>
+      </div>
+      <div *ngIf="reservaForm.hasError('ciudadesIguales')">
+        <mat-error>
+          La ciudad de destino no puede ser igual a la ciudad de origen.
+        </mat-error>
       </div>
 
       <div class="form-actions">
@@ -168,4 +167,10 @@
       </div>
     </form>
   </mat-card-content>
-</mat-card> 
+</mat-card>
+
+<div *ngIf="mensajeExito" style="margin-top: 16px;">
+  <mat-card style="background: #e8f5e9; color: #388e3c; text-align: center; font-weight: bold;">
+    {{ mensajeExito }}
+  </mat-card>
+</div> 
